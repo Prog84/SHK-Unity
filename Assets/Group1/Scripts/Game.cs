@@ -6,49 +6,29 @@ public class Game : MonoBehaviour
 {
     [SerializeField] private GameObject _gameOverScreen;
     [SerializeField] private Player _player;
-    [SerializeField] private List<Enemy> _enemies;
-    [SerializeField] private List<SpeedBonus> _bonuses;
-    [SerializeField] private float _collisionDistance = 0.2f;
+    [SerializeField] private List<GameObject> _collisionObjects;
+
+    private int _countEnimies = 0;
 
     private void OnEnable()
     {
-        foreach (var enemy in _enemies)
-            enemy.Dead += OnDead;
-    }
-
-    private void OnDisable()
-    {
-        foreach (var enemy in _enemies)
-            enemy.Dead -= OnDead;
-    }
-
-    private void Update()
-    {
-        CollisionDetector();
-    }
-
-    private void CollisionDetector()
-    {
-        foreach (var enemy in _enemies)
+        foreach (var collisionObject in _collisionObjects)
         {
-            if (Vector3.Distance(_player.gameObject.transform.position, enemy.gameObject.transform.position) < _collisionDistance)
+            if (collisionObject.TryGetComponent(out Enemy enemy))
             {
-                enemy.Die();
-            }
-        }
-        foreach (var bonus in _bonuses)
-        {
-            if (Vector3.Distance(_player.gameObject.transform.position, bonus.gameObject.transform.position) < _collisionDistance)
-            {
-                _player.IncreaseSpeed();
+                enemy.Dead += OnDead;
+                _countEnimies++;
             }
         }
     }
 
-    private void OnDead()
+    private void OnDead(Enemy enemy)
     {
-        var countAliveEnemy = _enemies.Count(enemy => enemy.ISAlive == true);
-        if (countAliveEnemy == 0)
+        enemy.Dead -= OnDead;
+        _countEnimies--;
+        _collisionObjects.Remove(enemy.gameObject);
+
+        if (_countEnimies == 0)
         {
             _gameOverScreen.SetActive(true);
         }
