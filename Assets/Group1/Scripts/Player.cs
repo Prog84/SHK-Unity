@@ -2,18 +2,17 @@
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _startSpeed;
-    [SerializeField] private bool _timer;
+    [SerializeField] private float _baseSpeed;
     [SerializeField] private float _timeBonusSpeed;
 
-    private float _currentSpeed;
     private float _speedMultiplier;
     private float _bonusTimeLeft;
+    private int _countBonuses;
 
     private void Start()
     {
-        _speedMultiplier = 2;
-        _currentSpeed = _startSpeed;
+        _countBonuses = 0;
+        _speedMultiplier = 2;       
     }
 
     private void Update()
@@ -21,32 +20,31 @@ public class Player : MonoBehaviour
         ReduceSpeed();
 
         var offset = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
-        transform.Translate(offset * _currentSpeed * Time.deltaTime);
+        transform.Translate(offset * _baseSpeed * Time.deltaTime);
     }
 
     public void IncreaseSpeed()
     {
-        _timer = true;
-        if (_currentSpeed == _startSpeed * _speedMultiplier)
-        {
-            _bonusTimeLeft += _timeBonusSpeed;
-        }
-        else
-        {
-            _currentSpeed *= _speedMultiplier;
-            _bonusTimeLeft = _timeBonusSpeed;
-        }
+        _countBonuses++;
+        _baseSpeed *= _speedMultiplier;
+        _bonusTimeLeft = _timeBonusSpeed;
     }
 
     private void ReduceSpeed()
     {
-        if (_timer)
+        if (_countBonuses > 0)
         {
             _bonusTimeLeft -= Time.deltaTime;
+
             if (_bonusTimeLeft < 0)
             {
-                _timer = false;
-                _currentSpeed /= _speedMultiplier;
+                _countBonuses--;
+                _baseSpeed /= _speedMultiplier;
+
+                if (_countBonuses > 0)
+                {
+                    _bonusTimeLeft = _timeBonusSpeed;
+                }
             }
         }
     }

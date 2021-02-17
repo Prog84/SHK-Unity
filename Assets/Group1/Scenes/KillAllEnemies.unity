@@ -455,7 +455,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameOverScreen: {fileID: 1054253062}
-  _player: {fileID: 1761935012}
   _collisionObjects:
   - {fileID: 2083640146}
   - {fileID: 1754708960}
@@ -1072,9 +1071,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dede9e7d6741aea4cb07b98da83cc6a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startSpeed: 5
+  _baseSpeed: 4
   _timer: 0
   _timeBonusSpeed: 2
+  _speedMultiplier: 0
+  _bonusTimeLeft: 0
+  _countBonuses: 0
 --- !u!58 &1761935013
 CircleCollider2D:
   m_ObjectHideFlags: 0
