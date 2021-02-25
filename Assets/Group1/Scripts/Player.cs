@@ -1,52 +1,23 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private float _baseSpeed;
-    [SerializeField] private float _timeBonusSpeed;
-
-    private float _speedMultiplier;
-    private float _bonusTimeLeft;
-    private int _countBonuses;
-
-    private void Start()
-    {
-        _countBonuses = 0;
-        _speedMultiplier = 2;       
-    }
-
+    
     private void Update()
     {
-        ReduceSpeed();
-
         var offset = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
         transform.Translate(offset * _baseSpeed * Time.deltaTime);
     }
 
-    public void IncreaseSpeed()
+    private IEnumerator SpeedBooster(float bonusTimeLeft, float speedMultiplier)
     {
-        _countBonuses++;
-        _baseSpeed *= _speedMultiplier;
-        _bonusTimeLeft = _timeBonusSpeed;
-    }
+        var waitForSeconds = new WaitForSeconds(bonusTimeLeft);
 
-    private void ReduceSpeed()
-    {
-        if (_countBonuses > 0)
-        {
-            _bonusTimeLeft -= Time.deltaTime;
-
-            if (_bonusTimeLeft < 0)
-            {
-                _countBonuses--;
-                _baseSpeed /= _speedMultiplier;
-
-                if (_countBonuses > 0)
-                {
-                    _bonusTimeLeft = _timeBonusSpeed;
-                }
-            }
-        }
+        _baseSpeed *= speedMultiplier;
+        yield return waitForSeconds;
+        _baseSpeed /= speedMultiplier;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -58,7 +29,7 @@ public class Player : MonoBehaviour
 
         if (collision.TryGetComponent(out SpeedBonus bonus))
         {
-            IncreaseSpeed();
+            StartCoroutine(SpeedBooster(bonus.BonusTime, bonus.SpeedMultiplier));
             Destroy(bonus.gameObject);
         }
     }

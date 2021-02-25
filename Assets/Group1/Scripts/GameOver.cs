@@ -21,6 +21,17 @@ public class GameOver : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        foreach (var collisionObject in _collisionObjects)
+        {
+            if (collisionObject.TryGetComponent(out Enemy enemy))
+            {
+                enemy.Dead -= OnDead;
+            }
+        }
+    }
+
     private void OnDead(Enemy enemy)
     {
         enemy.Dead -= OnDead;

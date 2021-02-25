@@ -719,6 +719,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a589cae294ff9314285c3aa7260bcbb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _speedMultiplier: 2
+  _bonusTime: 2
 --- !u!212 &1581383246
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1072,11 +1074,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _baseSpeed: 4
-  _timer: 0
-  _timeBonusSpeed: 2
-  _speedMultiplier: 0
-  _bonusTimeLeft: 0
-  _countBonuses: 0
 --- !u!58 &1761935013
 CircleCollider2D:
   m_ObjectHideFlags: 0
